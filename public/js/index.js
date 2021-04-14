@@ -20,8 +20,10 @@ document.getElementById("buttonConsultarEmpenho").onclick = () => {
 
     var urlEmpenho = urlBaseAPI+numeroEmpenho
 
+    var keyUserAPI = keyAPI()
+
     requisicao.open("GET", urlEmpenho);
-    requisicao.setRequestHeader("chave-api-dados", "ccfd07c04592c20a8fae03fff22c5e07");
+    requisicao.setRequestHeader("chave-api-dados", keyUserAPI);
     requisicao.responseType = 'text';
     requisicao.send();
     console.log("Enviada solicitação e esperando Respota!")
