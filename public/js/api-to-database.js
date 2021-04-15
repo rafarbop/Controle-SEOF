@@ -1,13 +1,10 @@
 
 
-function keyAPI() {
-    const userKey = prompt("Informe a chave de acesso(token)  a ser utilizado na API:")
-    return userKey
-}
-
 document.getElementById("buttonConsultarEmpenho").onclick = () => {
 
     var numeroEmpenho = document.getElementById("numberEmpenho").value
+
+    var keyApiGov = document.getElementById("keyApiGov").value
 
     if (numeroEmpenho.length != 12){
         return alert("O Empenho deve ser informado com o ano e numero: Ex.: 2021NE000001")
@@ -20,16 +17,19 @@ document.getElementById("buttonConsultarEmpenho").onclick = () => {
 
     var urlEmpenho = urlBaseAPI+numeroEmpenho
 
-    var keyUserAPI = keyAPI()
-
     requisicao.open("GET", urlEmpenho);
-    requisicao.setRequestHeader("chave-api-dados", keyUserAPI);
+    requisicao.setRequestHeader("chave-api-dados", keyApiGov);
     requisicao.responseType = 'text';
     requisicao.send();
     console.log("Enviada solicitação e esperando Respota!")
 
+    var dados = document.getElementById("listaDeEmpenhos")
+    dados.innerHTML = '<button class="button is-success is-loading is-rounded">Loading</button>'
+
     requisicao.onload = () => {
-        alert("Resposta Recebida")
+        
+        dados.innerHTML = ''
+
         var jsonResponse = JSON.parse(requisicao.response)
         console.log(jsonResponse)
 
@@ -43,7 +43,11 @@ document.getElementById("buttonConsultarEmpenho").onclick = () => {
         empenhoJson.valor = jsonResponse.valor
         empenhoJson.observacao = jsonResponse.observacao
 
-        var dados = document.getElementById("div")
+        const containerEmpenhos = document.getElementById("container-empenhos")
+        while (containerEmpenhos.firstChild){
+            containerEmpenhos.removeChild(containerEmpenhos.firstChild)
+        }
+
         for (key in empenhoJson) {
             let item = document.createElement("div");
             item.classList.add("columns","has-text-centered","has-background-success-dark","has-text-white")
@@ -58,7 +62,7 @@ document.getElementById("buttonConsultarEmpenho").onclick = () => {
             itemInfo.innerText = empenhoJson[key]
             item.appendChild(itemInfo)
 
-            document.getElementById("container-empenhos").insertBefore(item, dados)
+            containerEmpenhos.appendChild(item)
 
         }
         console.log("Resposta Recebida!")
